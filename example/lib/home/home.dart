@@ -119,7 +119,20 @@ class _MyAppState extends State<MyApp> {
           if (bleAvailability != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('BLE: $bleAvailability'),
+              child: Row(
+                children: [
+                  const Text('BLE is: '),
+                  Text(
+                    bleAvailability == 'poweredOn' ? 'ON' : 'OFF',
+                    style: TextStyle(
+                      color: bleAvailability == 'poweredOn'
+                          ? Colors.green
+                          : Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
         ],
       ),
