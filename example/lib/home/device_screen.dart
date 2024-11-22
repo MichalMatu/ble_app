@@ -68,7 +68,7 @@ class DeviceScreenState extends State<DeviceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.device.name ?? 'Device'),
+        title: Text('Connected to ${widget.device.name ?? "Unknown Device"}'),
         elevation: 4,
       ),
       body: Center(
@@ -76,11 +76,6 @@ class DeviceScreenState extends State<DeviceScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Connected to ${widget.device.name ?? "Unknown Device"}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: readSensorData,
