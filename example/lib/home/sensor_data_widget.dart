@@ -73,9 +73,22 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
       );
 
       setState(() {
-        sensorData = value.isNotEmpty
-            ? String.fromCharCodes(value)
-            : "No data received from the sensor";
+        if (value.isNotEmpty) {
+          final rawData = String.fromCharCodes(value).split(',');
+          if (rawData.length >= 3) {
+            final temperature = rawData[0];
+            final humidity = rawData[1];
+            final co2 = rawData[2];
+
+            sensorData = "Temperature: $temperature°C\n"
+                "Humidity: $humidity%\n"
+                "CO2: $co2 ppm";
+          } else {
+            sensorData = "Error: Incomplete sensor data received.";
+          }
+        } else {
+          sensorData = "No data received from the sensor.";
+        }
       });
     } catch (e) {
       setState(() {
