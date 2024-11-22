@@ -13,7 +13,7 @@ class SensorDataWidget extends StatefulWidget {
 }
 
 class SensorDataWidgetState extends State<SensorDataWidget> {
-  String sensorData = "No data available";
+  List<Widget> sensorDataWidgets = [];
   Timer? _timer;
 
   @override
@@ -80,31 +80,85 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
             final humidity = rawData[1];
             final co2 = rawData[2];
 
-            sensorData = "Temperature: $temperature°C\n"
-                "Humidity: $humidity%\n"
-                "CO2: $co2 ppm";
+            sensorDataWidgets = [
+              _buildSensorRow(
+                  Icons.thermostat, "$temperature°C", "Temperature"),
+              _buildSensorRow(Icons.water_drop, "$humidity%", "Humidity"),
+              _buildSensorRow(Icons.air, "$co2 ppm", "CO2"),
+            ];
           } else {
-            sensorData = "Error: Incomplete sensor data received.";
+            sensorDataWidgets = [
+              _buildErrorRow("Error: Incomplete sensor data received."),
+            ];
           }
         } else {
-          sensorData = "No data received from the sensor.";
+          sensorDataWidgets = [
+            _buildErrorRow("No data received from the sensor."),
+          ];
         }
       });
     } catch (e) {
       setState(() {
-        sensorData = "Error reading data: $e";
+        sensorDataWidgets = [
+          _buildErrorRow("Error reading data: $e"),
+        ];
       });
       debugPrint("Error reading data: $e");
     }
   }
 
+  // Helper method to create a row with an icon and text
+  Widget _buildSensorRow(IconData icon, String value, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 32, color: Colors.blue), // Icon
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              Text(
+                value,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper method to create an error row
+  Widget _buildErrorRow(String message) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        message,
+        style: const TextStyle(fontSize: 16, color: Colors.red),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        sensorData,
-        style: const TextStyle(fontSize: 16),
-        textAlign: TextAlign.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: sensorDataWidgets.isNotEmpty
+            ? sensorDataWidgets
+            : [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                const Text("Fetching sensor data..."),
+              ],
       ),
     );
   }
