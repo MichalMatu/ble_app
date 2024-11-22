@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:universal_ble/universal_ble.dart';
 import 'dart:typed_data';
+import 'dart:async';
 
 class SensorDataWidget extends StatefulWidget {
   final BleDevice device;
@@ -13,10 +14,27 @@ class SensorDataWidget extends StatefulWidget {
 
 class SensorDataWidgetState extends State<SensorDataWidget> {
   String sensorData = "No data available";
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    startPolling();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Stop the timer when the widget is disposed
+    super.dispose();
+  }
+
+  // Start polling for sensor data every 60 seconds
+  void startPolling() {
+    _timer = Timer.periodic(const Duration(seconds: 60), (timer) {
+      readSensorData();
+    });
+
+    // Initial read
     readSensorData();
   }
 
@@ -26,7 +44,7 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
       final services =
           await UniversalBle.discoverServices(widget.device.deviceId);
       for (var service in services) {
-        debugPrint("Service: ${service.characteristics}");
+        debugPrint("Service: ${service.uuid}");
         for (var characteristic in service.characteristics) {
           debugPrint("  Characteristic: ${characteristic.uuid}");
         }
@@ -69,10 +87,12 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      sensorData,
-      style: const TextStyle(fontSize: 16),
-      textAlign: TextAlign.center,
+    return Center(
+      child: Text(
+        sensorData,
+        style: const TextStyle(fontSize: 16),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
