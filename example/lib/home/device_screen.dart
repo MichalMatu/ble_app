@@ -14,23 +14,6 @@ class DeviceScreen extends StatefulWidget {
 class DeviceScreenState extends State<DeviceScreen> {
   String sensorData = "No data available";
 
-  // Function to discover services and characteristics
-  Future<void> discoverServices() async {
-    try {
-      final services =
-          await UniversalBle.discoverServices(widget.device.deviceId);
-      for (var service in services) {
-        debugPrint("Service: ${service.characteristics}");
-        for (var characteristic in service.characteristics) {
-          debugPrint("  Characteristic: ${characteristic.uuid}");
-        }
-      }
-      debugPrint("Service discovery completed.");
-    } catch (e) {
-      debugPrint("Error discovering services: $e");
-    }
-  }
-
   // Function to read sensor data
   Future<void> readSensorData() async {
     try {
@@ -40,9 +23,6 @@ class DeviceScreenState extends State<DeviceScreen> {
         debugPrint("Device not connected. Attempting to connect...");
         await UniversalBle.connect(widget.device.deviceId);
       }
-
-      // Discover services (if not already done)
-      await discoverServices();
 
       // Read value from the characteristic
       final Uint8List value = await UniversalBle.readValue(
