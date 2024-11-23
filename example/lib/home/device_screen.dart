@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:universal_ble/universal_ble.dart';
 import 'sensor_data_widget.dart';
+import 'settings_screen.dart'; // Import the SettingsScreen
 
 class DeviceScreen extends StatelessWidget {
   final BleDevice device;
@@ -29,6 +30,19 @@ class DeviceScreen extends StatelessWidget {
                   fontSize: 24,
                 ),
               ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                  ),
+                ); // Navigate to SettingsScreen
+              },
             ),
             ListTile(
               leading: const Icon(Icons.arrow_back),
