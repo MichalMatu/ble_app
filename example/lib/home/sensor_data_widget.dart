@@ -55,7 +55,7 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
     }
   }
 
-// Function to read sensor data
+  // Function to read sensor data
   Future<void> readSensorData() async {
     try {
       final isConnected = await UniversalBle.isPaired(widget.device.deviceId);
@@ -75,12 +75,14 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
       setState(() {
         if (value.isNotEmpty) {
           final rawData = String.fromCharCodes(value).split(',');
-          if (rawData.length >= 3) {
-            final temperature = rawData[0];
-            final humidity = rawData[1];
-            final co2 = rawData[2];
+          if (rawData.length >= 4) {
+            final time = rawData[0];
+            final temperature = rawData[1];
+            final humidity = rawData[2];
+            final co2 = rawData[3];
 
             sensorDataWidgets = [
+              _buildSensorRow(Icons.access_time, time, "Time"),
               _buildSensorRow(
                   Icons.thermostat, "$temperature°C", "Temperature"),
               _buildSensorRow(Icons.water_drop, "$humidity%", "Humidity"),
