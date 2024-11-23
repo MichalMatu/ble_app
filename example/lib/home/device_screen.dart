@@ -14,6 +14,33 @@ class DeviceScreen extends StatelessWidget {
         title: Text('Connected to ${device.name ?? "Unknown Device"}'),
         elevation: 4,
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: const Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.arrow_back),
+              title: const Text('Back'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context); // Navigate back to the previous screen
+              },
+            ),
+          ],
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
