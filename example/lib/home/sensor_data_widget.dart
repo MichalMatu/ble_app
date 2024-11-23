@@ -55,7 +55,7 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
     }
   }
 
-  // Function to read sensor data
+// Function to read sensor data
   Future<void> readSensorData() async {
     try {
       final isConnected = await UniversalBle.isPaired(widget.device.deviceId);
@@ -87,8 +87,9 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
               _buildSensorRow(Icons.air, "$co2 ppm", "CO2"),
             ];
           } else {
+            // Show a loading circle while waiting for complete data
             sensorDataWidgets = [
-              _buildErrorRow("Error: Incomplete sensor data received."),
+              const CircularProgressIndicator(),
             ];
           }
         } else {
