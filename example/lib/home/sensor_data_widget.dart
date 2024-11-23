@@ -122,14 +122,22 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label,
-                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              SizedBox(
+                // set width to prevent overflow
+                width: 100,
+                child: Text(
+                  label,
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
               ),
-              Text(
-                value,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              SizedBox(
+                // set width to prevent overflow
+                width: 100,
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),
