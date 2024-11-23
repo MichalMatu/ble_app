@@ -181,7 +181,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-void main() {
-  runApp(const MaterialApp(home: MyApp()));
-}
