@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:universal_ble/universal_ble.dart';
 import 'sensor_data_widget.dart';
-import 'drawer_widget.dart'; // Import the AppDrawer
+import 'drawer_widget.dart';
 
 class DeviceScreen extends StatelessWidget {
   final BleDevice device;
@@ -20,6 +20,7 @@ class DeviceScreen extends StatelessWidget {
           Navigator.pop(context); // Close the drawer
           Navigator.pop(context); // Navigate back to the previous screen
         },
+        device: device, // Pass the device to AppDrawer
       ),
       body: Center(
         child: Column(
@@ -27,7 +28,6 @@ class DeviceScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            // Use the SensorDataWidget to display sensor data
             SensorDataWidget(device: device),
           ],
         ),

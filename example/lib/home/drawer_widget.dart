@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:universal_ble/universal_ble.dart';
 import 'settings_screen.dart'; // Import the SettingsScreen
+import 'history_graph.dart'; // Import the HistoryGraph
 
 class AppDrawer extends StatelessWidget {
   final VoidCallback onBack;
+  final BleDevice device;
 
-  const AppDrawer({super.key, required this.onBack});
+  const AppDrawer({super.key, required this.onBack, required this.device});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +16,9 @@ class AppDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            padding: EdgeInsets.zero, // Adjust padding
+            padding: EdgeInsets.zero,
             child: SizedBox(
-              height: 80, // Reduce header size
+              height: 80,
               child: Container(
                 color: Theme.of(context).primaryColor,
                 alignment: Alignment.center,
@@ -30,6 +33,19 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.history),
+            title: const Text('History Graph'),
+            onTap: () {
+              Navigator.pop(context); // Close the drawer
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HistoryGraph(device: device),
+                ),
+              );
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {
@@ -39,13 +55,13 @@ class AppDrawer extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => const SettingsScreen(),
                 ),
-              ); // Navigate to SettingsScreen
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.arrow_back),
             title: const Text('Back'),
-            onTap: onBack, // Trigger the callback
+            onTap: onBack,
           ),
         ],
       ),
