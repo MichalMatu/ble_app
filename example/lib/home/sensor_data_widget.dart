@@ -58,6 +58,14 @@ class SensorDataWidgetState extends State<SensorDataWidget> {
   // Function to read sensor data
   Future<void> readSensorData() async {
     try {
+      final isPaired = await UniversalBle.isPaired(widget.device.deviceId);
+
+      if (isPaired == null || !isPaired) {
+        debugPrint("Device not paired. Pairing...");
+        await UniversalBle.pair(
+            widget.device.deviceId); // Manually trigger pairing
+      }
+
       final isConnected = await UniversalBle.isPaired(widget.device.deviceId);
       if (isConnected == null || !isConnected) {
         debugPrint("Device not connected. Attempting to connect...");
