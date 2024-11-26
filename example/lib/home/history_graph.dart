@@ -99,7 +99,7 @@ class HistoryGraphState extends State<HistoryGraph> {
       appBar: AppBar(
         title: Text(
           'Combined Sensor Data - ${widget.device.name ?? "Unknown Device"}',
-          style: TextStyle(fontSize: 16), // Adjust font size here
+          style: const TextStyle(fontSize: 16), // Adjust font size here
         ),
         elevation: 4,
       ),
