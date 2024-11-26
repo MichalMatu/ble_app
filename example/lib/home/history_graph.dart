@@ -76,7 +76,8 @@ class HistoryGraphState extends State<HistoryGraph> {
 
     final parts = line.split(',');
     if (parts.length >= 4) {
-      final timestamp = parts[0]; // Use timestamp as-is
+      final timestamp =
+          parts[0].substring(0, 16); // Remove seconds from timestamp
       final temperature = double.tryParse(parts[1]) ?? 0.0;
       final humidity = double.tryParse(parts[2]) ?? 0.0;
       final co2 = double.tryParse(parts[3]) ?? 0.0;
@@ -105,28 +106,42 @@ class HistoryGraphState extends State<HistoryGraph> {
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: SfCartesianChart(
-                zoomPanBehavior: ZoomPanBehavior(enablePinching: true),
-                legend: const Legend(isVisible: true),
+                zoomPanBehavior: ZoomPanBehavior(
+                  enablePanning: true,
+                  enablePinching: true,
+                ),
                 title: const ChartTitle(text: 'Combined Sensor Data'),
                 primaryXAxis: const CategoryAxis(
-                  title: AxisTitle(text: 'Timestamp'),
                   labelIntersectAction: AxisLabelIntersectAction.hide,
+                  labelRotation: 90, // Rotate labels vertically
                 ),
                 primaryYAxis: const NumericAxis(
                   name: 'TemperatureAxis',
-                  title: AxisTitle(text: 'Temperature (°C)'),
+                  title: AxisTitle(
+                    text: 'Temperature (°C)',
+                    textStyle: TextStyle(color: Colors.red),
+                  ),
                   opposedPosition: false,
+                  axisLine: AxisLine(color: Colors.red),
                 ),
                 axes: const [
                   NumericAxis(
                     name: 'HumidityAxis',
-                    title: AxisTitle(text: 'Humidity (%)'),
+                    title: AxisTitle(
+                      text: 'Humidity (%)',
+                      textStyle: TextStyle(color: Colors.blue),
+                    ),
                     opposedPosition: true,
+                    axisLine: AxisLine(color: Colors.blue),
                   ),
                   NumericAxis(
                     name: 'CO2Axis',
-                    title: AxisTitle(text: 'CO₂ (ppm)'),
+                    title: AxisTitle(
+                      text: 'CO₂ (ppm)',
+                      textStyle: TextStyle(color: Colors.green),
+                    ),
                     opposedPosition: true,
+                    axisLine: AxisLine(color: Colors.green),
                   ),
                 ],
                 series: <CartesianSeries>[
