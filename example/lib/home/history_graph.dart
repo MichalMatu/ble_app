@@ -110,11 +110,13 @@ class HistoryGraphState extends State<HistoryGraph> {
               child: SfCartesianChart(
                 zoomPanBehavior: ZoomPanBehavior(
                   enablePanning: true,
-                  enablePinching: true,
+                  enablePinching: true, // Ensure zoom and pinch is enabled
                 ),
                 primaryXAxis: const CategoryAxis(
                   labelIntersectAction: AxisLabelIntersectAction.hide,
                   labelRotation: 90, // Rotate labels vertically
+                  labelStyle:
+                      TextStyle(fontSize: 10), // Smaller font for axis labels
                 ),
                 primaryYAxis: const NumericAxis(
                   name: 'TemperatureAxis',
@@ -125,6 +127,8 @@ class HistoryGraphState extends State<HistoryGraph> {
                   ),
                   opposedPosition: false,
                   axisLine: AxisLine(color: Colors.red),
+                  labelStyle:
+                      TextStyle(fontSize: 10), // Smaller font for axis labels
                 ),
                 axes: const [
                   NumericAxis(
@@ -137,6 +141,8 @@ class HistoryGraphState extends State<HistoryGraph> {
                     ),
                     opposedPosition: true,
                     axisLine: AxisLine(color: Colors.blue),
+                    labelStyle:
+                        TextStyle(fontSize: 10), // Smaller font for axis labels
                   ),
                   NumericAxis(
                     name: 'CO2Axis',
@@ -148,6 +154,8 @@ class HistoryGraphState extends State<HistoryGraph> {
                     ),
                     opposedPosition: true,
                     axisLine: AxisLine(color: Colors.green),
+                    labelStyle:
+                        TextStyle(fontSize: 10), // Smaller font for axis labels
                   ),
                 ],
                 series: <CartesianSeries>[
