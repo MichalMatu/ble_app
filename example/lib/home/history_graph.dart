@@ -110,52 +110,47 @@ class HistoryGraphState extends State<HistoryGraph> {
               child: SfCartesianChart(
                 zoomPanBehavior: ZoomPanBehavior(
                   enablePanning: true,
-                  enablePinching: true, // Ensure zoom and pinch is enabled
+                  enablePinching: true,
+                  enableMouseWheelZooming: true,
                 ),
                 primaryXAxis: const CategoryAxis(
                   labelIntersectAction: AxisLabelIntersectAction.hide,
-                  labelRotation: 90, // Rotate labels vertically
-                  labelStyle:
-                      TextStyle(fontSize: 10), // Smaller font for axis labels
+                  labelRotation: 45,
+                  labelStyle: TextStyle(fontSize: 12),
+                  majorGridLines: MajorGridLines(width: 0),
                 ),
                 primaryYAxis: const NumericAxis(
                   name: 'TemperatureAxis',
                   title: AxisTitle(
                     text: 'Temperature (°C)',
-                    textStyle: TextStyle(
-                        color: Colors.red, fontSize: 10), // Smaller text size
+                    textStyle: TextStyle(color: Colors.red, fontSize: 12),
                   ),
                   opposedPosition: false,
                   axisLine: AxisLine(color: Colors.red),
-                  labelStyle:
-                      TextStyle(fontSize: 10), // Smaller font for axis labels
+                  labelStyle: TextStyle(fontSize: 12),
                 ),
                 axes: const [
                   NumericAxis(
                     name: 'HumidityAxis',
                     title: AxisTitle(
                       text: 'Humidity (%)',
-                      textStyle: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 10), // Smaller text size
+                      textStyle: TextStyle(color: Colors.blue, fontSize: 12),
                     ),
                     opposedPosition: true,
                     axisLine: AxisLine(color: Colors.blue),
-                    labelStyle:
-                        TextStyle(fontSize: 10), // Smaller font for axis labels
+                    labelStyle: TextStyle(fontSize: 12),
+                    majorGridLines: MajorGridLines(width: 0),
                   ),
                   NumericAxis(
                     name: 'CO2Axis',
                     title: AxisTitle(
                       text: 'CO₂ (ppm)',
-                      textStyle: TextStyle(
-                          color: Colors.green,
-                          fontSize: 10), // Smaller text size
+                      textStyle: TextStyle(color: Colors.green, fontSize: 12),
                     ),
                     opposedPosition: true,
                     axisLine: AxisLine(color: Colors.green),
-                    labelStyle:
-                        TextStyle(fontSize: 10), // Smaller font for axis labels
+                    labelStyle: TextStyle(fontSize: 12),
+                    majorGridLines: MajorGridLines(width: 0),
                   ),
                 ],
                 series: <CartesianSeries>[
@@ -165,7 +160,9 @@ class HistoryGraphState extends State<HistoryGraph> {
                     xValueMapper: (DataPoint dp, _) => dp.timestamp,
                     yValueMapper: (DataPoint dp, _) => dp.temperature,
                     color: Colors.red,
+                    width: 2,
                     yAxisName: 'TemperatureAxis',
+                    markerSettings: const MarkerSettings(isVisible: true),
                   ),
                   LineSeries<DataPoint, String>(
                     name: 'Humidity',
@@ -173,7 +170,9 @@ class HistoryGraphState extends State<HistoryGraph> {
                     xValueMapper: (DataPoint dp, _) => dp.timestamp,
                     yValueMapper: (DataPoint dp, _) => dp.humidity,
                     color: Colors.blue,
+                    width: 2,
                     yAxisName: 'HumidityAxis',
+                    markerSettings: const MarkerSettings(isVisible: true),
                   ),
                   LineSeries<DataPoint, String>(
                     name: 'CO2',
@@ -181,7 +180,9 @@ class HistoryGraphState extends State<HistoryGraph> {
                     xValueMapper: (DataPoint dp, _) => dp.timestamp,
                     yValueMapper: (DataPoint dp, _) => dp.co2,
                     color: Colors.green,
+                    width: 2,
                     yAxisName: 'CO2Axis',
+                    markerSettings: const MarkerSettings(isVisible: true),
                   ),
                 ],
               ),
