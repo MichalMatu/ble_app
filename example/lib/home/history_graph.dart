@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:universal_ble/universal_ble.dart';
 import 'dart:typed_data';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HistoryGraph extends StatefulWidget {
   final BleDevice device;
@@ -13,9 +13,7 @@ class HistoryGraph extends StatefulWidget {
 }
 
 class HistoryGraphState extends State<HistoryGraph> {
-  List<FlSpot> temperatureData = [];
-  List<FlSpot> humidityData = [];
-  List<FlSpot> co2Data = [];
+  List<DataPoint> dataPoints = [];
   bool isLoading = true;
   String buffer = ""; // Buffer to store partial data chunks
 
@@ -48,18 +46,18 @@ class HistoryGraphState extends State<HistoryGraph> {
           // Check if the buffer contains complete lines
           final lines = buffer.split('\n');
           for (int i = 0; i < lines.length - 1; i++) {
-            parseAndSetData(lines[i]);
+            addData(lines[i]);
           }
 
           // Keep the last, possibly incomplete line in the buffer
           buffer = lines.last;
 
-          // Add a stopping condition (e.g., no more data, special signal, or user input)
+          // Stop if "END_OF_DATA" marker is found
           if (chunk.contains("END_OF_DATA")) {
-            reading = false; // Stop reading if an "END_OF_DATA" marker is found
+            reading = false;
           }
         } else {
-          reading = false; // Stop reading if no data is received
+          reading = false;
           debugPrint("No more data received.");
         }
       }
@@ -72,23 +70,24 @@ class HistoryGraphState extends State<HistoryGraph> {
     }
   }
 
-  void parseAndSetData(String line) {
-    // Assumes data is a CSV-like string: "timestamp,temperature,humidity,co2"
+  void addData(String line) {
+    // Data format: "2024/11/26 13:05:44,25.82,45.46,2102"
     if (line.isEmpty) return;
 
     final parts = line.split(',');
     if (parts.length >= 4) {
-      final timestamp = double.tryParse(parts[0]) ??
-          (temperatureData.length
-              .toDouble()); // Fallback to index if timestamp fails
+      final timestamp = parts[0]; // Use timestamp as-is
       final temperature = double.tryParse(parts[1]) ?? 0.0;
       final humidity = double.tryParse(parts[2]) ?? 0.0;
       final co2 = double.tryParse(parts[3]) ?? 0.0;
 
       setState(() {
-        temperatureData.add(FlSpot(timestamp, temperature));
-        humidityData.add(FlSpot(timestamp, humidity));
-        co2Data.add(FlSpot(timestamp, co2));
+        dataPoints.add(DataPoint(
+          timestamp: timestamp,
+          temperature: temperature,
+          humidity: humidity,
+          co2: co2,
+        ));
       });
     }
   }
@@ -105,71 +104,73 @@ class HistoryGraphState extends State<HistoryGraph> {
           ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const Text(
-                      "Temperature Data",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 200,
-                      child: LineChart(
-                          buildLineChart(temperatureData, Colors.red)),
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      "Humidity Data",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 200,
-                      child:
-                          LineChart(buildLineChart(humidityData, Colors.blue)),
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      "CO2 Data",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 200,
-                      child: LineChart(buildLineChart(co2Data, Colors.green)),
-                    ),
-                  ],
+              child: SfCartesianChart(
+                zoomPanBehavior: ZoomPanBehavior(enablePinching: true),
+                legend: const Legend(isVisible: true),
+                title: const ChartTitle(text: 'Combined Sensor Data'),
+                primaryXAxis: const CategoryAxis(
+                  title: AxisTitle(text: 'Timestamp'),
+                  labelIntersectAction: AxisLabelIntersectAction.hide,
                 ),
+                primaryYAxis: const NumericAxis(
+                  name: 'TemperatureAxis',
+                  title: AxisTitle(text: 'Temperature (°C)'),
+                  opposedPosition: false,
+                ),
+                axes: const [
+                  NumericAxis(
+                    name: 'HumidityAxis',
+                    title: AxisTitle(text: 'Humidity (%)'),
+                    opposedPosition: true,
+                  ),
+                  NumericAxis(
+                    name: 'CO2Axis',
+                    title: AxisTitle(text: 'CO₂ (ppm)'),
+                    opposedPosition: true,
+                  ),
+                ],
+                series: <CartesianSeries>[
+                  LineSeries<DataPoint, String>(
+                    name: 'Temperature',
+                    dataSource: dataPoints,
+                    xValueMapper: (DataPoint dp, _) => dp.timestamp,
+                    yValueMapper: (DataPoint dp, _) => dp.temperature,
+                    color: Colors.red,
+                    yAxisName: 'TemperatureAxis',
+                  ),
+                  LineSeries<DataPoint, String>(
+                    name: 'Humidity',
+                    dataSource: dataPoints,
+                    xValueMapper: (DataPoint dp, _) => dp.timestamp,
+                    yValueMapper: (DataPoint dp, _) => dp.humidity,
+                    color: Colors.blue,
+                    yAxisName: 'HumidityAxis',
+                  ),
+                  LineSeries<DataPoint, String>(
+                    name: 'CO2',
+                    dataSource: dataPoints,
+                    xValueMapper: (DataPoint dp, _) => dp.timestamp,
+                    yValueMapper: (DataPoint dp, _) => dp.co2,
+                    color: Colors.green,
+                    yAxisName: 'CO2Axis',
+                  ),
+                ],
               ),
             ),
     );
   }
+}
 
-  LineChartData buildLineChart(List<FlSpot> data, Color color) {
-    return LineChartData(
-      gridData: const FlGridData(show: true),
-      titlesData: const FlTitlesData(
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: true, reservedSize: 32),
-        ),
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: true),
-        ),
-      ),
-      borderData: FlBorderData(show: true),
-      lineBarsData: [
-        LineChartBarData(
-          spots: data,
-          isCurved: true,
-          color: color,
-          barWidth: 3,
-          belowBarData: BarAreaData(show: false),
-        ),
-      ],
-    );
-  }
+class DataPoint {
+  final String timestamp; // Keep as a string for direct use
+  final double temperature;
+  final double humidity;
+  final double co2;
+
+  DataPoint({
+    required this.timestamp,
+    required this.temperature,
+    required this.humidity,
+    required this.co2,
+  });
 }

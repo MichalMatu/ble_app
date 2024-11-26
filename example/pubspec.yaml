@@ -14,7 +14,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   permission_handler: ^10.4.3
   device_info_plus: ^9.0.2
-  fl_chart: ^0.69.2
+  syncfusion_flutter_charts: ^27.2.4
   universal_ble:
     path: ../
 
