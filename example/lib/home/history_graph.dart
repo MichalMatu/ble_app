@@ -76,8 +76,8 @@ class HistoryGraphState extends State<HistoryGraph> {
 
     final parts = line.split(',');
     if (parts.length >= 4) {
-      final timestamp =
-          parts[0].substring(0, 16); // Remove seconds from timestamp
+      // Extract up to minutes (YYYY/MM/DD HH:MM)
+      final timestamp = parts[0].substring(0, 16);
       final temperature = double.tryParse(parts[1]) ?? 0.0;
       final humidity = double.tryParse(parts[2]) ?? 0.0;
       final co2 = double.tryParse(parts[3]) ?? 0.0;
@@ -97,8 +97,10 @@ class HistoryGraphState extends State<HistoryGraph> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('History Graph - ${widget.device.name ?? "Unknown Device"}'),
+        title: Text(
+          'Combined Sensor Data - ${widget.device.name ?? "Unknown Device"}',
+          style: TextStyle(fontSize: 16), // Adjust font size here
+        ),
         elevation: 4,
       ),
       body: isLoading
@@ -110,7 +112,6 @@ class HistoryGraphState extends State<HistoryGraph> {
                   enablePanning: true,
                   enablePinching: true,
                 ),
-                title: const ChartTitle(text: 'Combined Sensor Data'),
                 primaryXAxis: const CategoryAxis(
                   labelIntersectAction: AxisLabelIntersectAction.hide,
                   labelRotation: 90, // Rotate labels vertically
@@ -119,7 +120,8 @@ class HistoryGraphState extends State<HistoryGraph> {
                   name: 'TemperatureAxis',
                   title: AxisTitle(
                     text: 'Temperature (°C)',
-                    textStyle: TextStyle(color: Colors.red),
+                    textStyle: TextStyle(
+                        color: Colors.red, fontSize: 10), // Smaller text size
                   ),
                   opposedPosition: false,
                   axisLine: AxisLine(color: Colors.red),
@@ -129,7 +131,9 @@ class HistoryGraphState extends State<HistoryGraph> {
                     name: 'HumidityAxis',
                     title: AxisTitle(
                       text: 'Humidity (%)',
-                      textStyle: TextStyle(color: Colors.blue),
+                      textStyle: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 10), // Smaller text size
                     ),
                     opposedPosition: true,
                     axisLine: AxisLine(color: Colors.blue),
@@ -138,7 +142,9 @@ class HistoryGraphState extends State<HistoryGraph> {
                     name: 'CO2Axis',
                     title: AxisTitle(
                       text: 'CO₂ (ppm)',
-                      textStyle: TextStyle(color: Colors.green),
+                      textStyle: TextStyle(
+                          color: Colors.green,
+                          fontSize: 10), // Smaller text size
                     ),
                     opposedPosition: true,
                     axisLine: AxisLine(color: Colors.green),
