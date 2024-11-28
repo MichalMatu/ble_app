@@ -13,7 +13,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _bleDevices = <BleDevice>[];
   bool _isScanning = false;
-  String? bleAvailability;
 
   @override
   void initState() {
@@ -52,12 +51,6 @@ class _MyAppState extends State<MyApp> {
         }
         setState(() {});
       }
-    };
-
-    UniversalBle.onAvailabilityChange = (state) {
-      setState(() {
-        bleAvailability = state.name;
-      });
     };
   }
 
@@ -115,26 +108,6 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         title: const Text('Scan BLE Devices'),
         elevation: 4,
-        actions: [
-          if (bleAvailability != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  const Text('BLE is: '),
-                  Text(
-                    bleAvailability == 'poweredOn' ? 'ON' : 'OFF',
-                    style: TextStyle(
-                      color: bleAvailability == 'poweredOn'
-                          ? Colors.green
-                          : Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
       ),
       body: Column(
         children: [
